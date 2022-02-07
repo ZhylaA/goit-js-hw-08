@@ -3,29 +3,35 @@
 // локальное хранилище и, при перезагрузке страницы,
 //     продолжать воспроизводить видео с этого времени.
 
-// {/* <iframe
-//   id="vimeo-player"
-//   src="https://player.vimeo.com/video/236203659"
-//   width="640"
-//   height="360"
-//   frameborder="0"
-//   allowfullscreen
-//   allow="autoplay; encrypted-media" */}
-// {/* ></iframe>
+// Пусть ключом для хранилища будет строка "videoplayer-current-time".
 
-// Ознакомься с документацией библиотеки Vimeo плеера.
+import throttle from 'lodash.throttle';
 // Добавь библиотеку как зависимость проекта через npm.
-// Инициализируй плеер в файле скрипта как это описано в
-//  секции pre - existing player, но учти что у тебя плеер
+import Player from '@vimeo/player';
+import { join } from 'lodash';
+// Инициализируй плеер в файле скрипта как это описано в секции pre - existing player, но учти что у тебя плеер
 //   добавлен как npm пакет, а не через CDN.
+
+const iframe = document.querySelector('iframe');
+const player = new Vimeo.Player(iframe);
+// Сохраняй время воспроизведения в локальное хранилище. 
+const onPlay = function (data) { localStorage.setItem('videoplayer-current-time', JSON.stringify(data)) };
+// Добавь в проект бибилотеку lodash.throttle и сделай так, чтобы время воспроизведения обновлялось в хранилище не чаще чем раз в секунду. */}
+player.on('timeupdate', throttle(onPlay, 1000));
 // Разбери документацию метода on() и начни отслеживать
 //  событие timeupdate - обновление времени воспроизведения.
-// Сохраняй время воспроизведения в локальное хранилище. 
-// Пусть ключом для хранилища будет строка "videoplayer-current-time".
+const saveTime = localStorage.getItem('videoplayer-current-time');
+const saveTimeParse = JSON.parse(saveTime);
+const time = saveTimeParse.seconds;
 // При перезагрузке страницы воспользуйся 
 // методом setCurrentTime() для того чтобы возобновить воспроизведение с сохраненной позиции.
-// Добавь в проект бибилотеку lodash.throttle и сделай так,
-// чтобы время воспроизведения обновлялось в хранилище не чаще чем раз в секунду. */}
-import throttle from 'lodash.throttle';
-
-console.log(localStorage);
+if (time <= 571.563) {
+    player.setCurrentTime(time).then(function (seconds) { }).catch(function (error) {
+        switch (error.name) {
+            case 'RangeError':
+                break;
+            default:
+                break;
+        }
+    });
+} else { localStorage.removeItem('videoplayer-current-time') };
