@@ -30,33 +30,60 @@ const STORAGE_KEY = 'feedback-form-state';
 const refs = {
     feedbackForm: document.querySelector('.feedback-form'),
     feedbackFormInput:document.querySelector('.feedback-form input'),
-    feedbackFormTextarea:document.querySelector('.feedback-form textarea'),}
-refs.feedbackFormInput.addEventListener('input', throttle(onFeedbackFormState, 500));
-refs.feedbackFormTextarea.addEventListener('input', throttle(onFeedbackFormState, 500));
+    feedbackFormTextarea: document.querySelector('.feedback-form textarea'),
+}
+    
+// refs.feedbackFormInput.addEventListener('input', throttle(onFeedbackFormState, 500));
+// refs.feedbackFormTextarea.addEventListener('input', throttle(onFeedbackFormState, 500));
 refs.feedbackForm.addEventListener('submit', onFormSubmit);
+refs.feedbackForm.addEventListener('input', throttle(onFeedbackFormState, 500));
+
+const saveData = localStorage.getItem('feedback-form-state');
+const parsedData = JSON.parse(saveData);
+
+if (parsedData) {
+  refs.feedbackFormInput.value = parsedData.email;
+  refs.feedbackFormTextarea.value = parsedData.message;
+}
+
 populateTextarea();
 populateTextInput();
-function onFeedbackFormState(evn) {
-    const textSave = evn.currentTarget.value;
-    console.log(textSave);
-    localStorage.setItem(STORAGE_KEY, textSave);
+function onFeedbackFormState() {
+    const email = refs.feedbackFormInput.value;
+    const message = refs.feedbackFormTextarea.value;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({email,message}));
 }
-function onFormSubmit(evn) {
-    evn.preventDefault();
-    evn.currentTarget.reset();
-    localStorage.removeItem(STORAGE_KEY);
-}
-function populateTextarea() {
-    const savedTextTextarea = localStorage.getItem(STORAGE_KEY);
-    if (savedTextTextarea) { refs.feedbackFormTextarea.value = savedTextTextarea };
-};
-function populateTextInput() {
-    const savedTextInput = localStorage.getItem(STORAGE_KEY);
-        if (savedTextInput) {
-        // console.log(savedTextInput);
-        refs.feedbackFormInput.value = savedTextInput;
-    };
-};
 
-// console.log(feedbackFormInput);
-// При сабмите формы очищай хранилище и поля формы
+function onFormSubmit(ev) {
+  ev.preventDefault();
+  const email = ev.currentTarget.elements.email.value;
+  const message = ev.currentTarget.elements.message.value;
+  if (!message || !email) {
+    return alert('Поля должны быть заполнены!');
+  }
+  const obj = {
+    message,
+    email,
+  };
+     console.log(obj);
+  localStorage.removeItem(STORAGE_KEY);
+  formEl.reset();
+}
+    
+    
+    
+    
+// function populateTextarea() {
+//     const savedTextTextarea = localStorage.getItem(STORAGE_KEY);
+//     if (savedTextTextarea) { refs.feedbackFormTextarea.value = savedTextTextarea };
+// };
+// function populateTextInput() {
+//     const savedTextInput = localStorage.getItem(STORAGE_KEY);
+//         if (savedTextInput) {
+//         // console.log(savedTextInput);
+//         refs.feedbackFormInput.value = savedTextInput;
+//     };
+// };
+
+// // console.log(feedbackFormInput);
+// // При сабмите формы очищай хранилище и поля формы
