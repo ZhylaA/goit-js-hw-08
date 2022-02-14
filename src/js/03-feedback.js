@@ -27,7 +27,7 @@
 import throttle from 'lodash.throttle';
 
 const STORAGE_KEY = "feedback-form-state";
-console.log(STORAGE_KEY);
+// console.log(STORAGE_KEY);
 
 const refs = {
     feedbackForm: document.querySelector('.feedback-form'),
@@ -40,7 +40,7 @@ const refs = {
 refs.feedbackForm.addEventListener('submit', onFormSubmit);
 refs.feedbackForm.addEventListener('input', throttle(onFeedbackFormState, 500));
 
-const saveData = localStorage.getItem('STORAGE_KEY');
+const saveData = localStorage.getItem(STORAGE_KEY);
 const parsedData = JSON.parse(saveData);
 
 if (parsedData) {
@@ -48,8 +48,8 @@ if (parsedData) {
   refs.feedbackFormTextarea.value = parsedData.message;
 }
 
-populateTextarea();
-populateTextInput();
+// populateTextarea();
+// populateTextInput();
 function onFeedbackFormState() {
     const email = refs.feedbackFormInput.value;
     const message = refs.feedbackFormTextarea.value;
@@ -72,14 +72,14 @@ function onFormSubmit(ev) {
   refs.feedbackForm.reset();
 };
 
-function populateTextarea() {
-    const savedTextTextarea = localStorage.getItem(STORAGE_KEY);
-    if (savedTextTextarea) { refs.feedbackFormTextarea.value = savedTextTextarea };
-};
+// function populateTextarea() {
+//     const savedTextTextarea = localStorage.getItem(STORAGE_KEY);
+//     if (savedTextTextarea) { refs.feedbackFormTextarea.value = savedTextTextarea };
+// };
 
-function populateTextInput() {
-    const savedTextInput = localStorage.getItem(STORAGE_KEY);
-        if (savedTextInput) {
-        refs.feedbackFormInput.value = savedTextInput;
-    };
-};
+// function populateTextInput() {
+//     const savedTextInput = localStorage.getItem(STORAGE_KEY);
+//         if (savedTextInput) {
+//         refs.feedbackFormInput.value = savedTextInput;
+//     };
+// };
